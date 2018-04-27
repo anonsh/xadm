@@ -1,0 +1,148 @@
+#!/bin/bash
+
+#VERIFICACAO#
+if [ -d /etc/adm ]; then
+echo ""
+else
+mkdir /etc/adm
+fi
+if [ -d /etc/adm/usuarios ]; then
+echo ""
+else
+mkdir /etc/adm/usuarios
+fi
+if [ -d /etc/adm/modulo ]; then
+echo ""
+else
+mkdir /etc/adm/modulo
+fi
+#VERIFICACAO#
+#Lop#
+while true
+do
+clear
+if [ -e /etc/adm/bnr ]; then
+/etc/adm/bnr
+fi
+if [ "$1" = "" ]; then
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+echo -e "\033[1;36mPARA SAIR DIGITE \033[1;31m[ 0 ]\033[1;36m OU"
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+echo -e "\033[1;31m[ 1 ]\033[1;36m - CRIAR BACKUP"
+echo -e "\033[1;31m[ 2 ]\033[1;36m - RESTAURAR BACKUP"
+echo -e "\033[1;31m[ 3 ]\033[1;36m - LIMPAR CACHE"
+echo -e "\033[1;31m[ 4 ]\033[1;36m - ALTERAR SENHA ROOT"
+echo -e "\033[1;31m[ 5 ]\033[1;36m - INFORMAÇOES CPU"
+echo -e "\033[1;31m[ 6 ]\033[1;36m - STATUS DA REDE"
+echo -e "\033[1;31m[ 7 ]\033[1;36m - TESTE DE VELOCIDADE"
+echo -e "\033[1;31m[ 8 ]\033[1;36m - ATUALIZAR PACOTES"
+echo -e "\033[1;31m[ 9 ]\033[1;36m - REINICIAR SERVIÇOS VPS"
+echo -e "\033[1;31m[ 10 ]\033[1;36m - REINICIAR VPS (REBOOT)\033[0m"
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+echo -e "\033[1;33mPara Usar Essas Opcoes De Maneira Automatica
+Digite o Comando: adm2 OPCAO
+Ex: adm2 1, adm2 2, adm2 4, adm2 7.\033[0m"
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+read -p "OPCAO: " opc
+else
+opc="$1"
+fi
+case $opc in
+0)
+menu
+break
+exit
+;;
+1)
+adm2fun adm1
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+2)
+adm2fun adm2
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+3)
+adm2fun adm3
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+4)
+adm2fun adm4
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+5)
+adm2fun adm5
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+6)
+adm2fun adm6
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+7)
+adm2fun adm7
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+8)
+adm2fun adm8
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+9)
+echo -e "\033[1;31mAguarde pode Demorar!\033[0m"
+sleep 3s
+adm2fun adm9 2>/dev/null 1>/dev/null
+echo -e "\033[1;33m[ ok ] \033[1;32mServiços Recarregados Com Sucesso!\033[0m"
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+10)
+adm2fun adm10
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+*)
+sleep 2s
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+esac
+sleep 2s
+done

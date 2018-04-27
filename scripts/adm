@@ -1,0 +1,345 @@
+#!/bin/bash
+if [ $(id -u) -eq 0 ]
+then
+clear
+else
+ if echo $(id) |grep sudo > /dev/null
+then
+clear
+echo "Voce não é root"
+echo "Seu usuario esta no grupo sudo"
+echo -e "Para virar root execute \033[1;31msudo su\033[0m"
+exit
+else
+clear
+echo -e "Vc nao esta como usuario root, nem com seus direitos (sudo)\nPara virar root execute \033[1;31msu\033[0m e digite sua senha root"
+exit
+ fi
+fi
+if [ -d /etc/adm ]; then
+echo ""
+else
+mkdir /etc/adm
+fi
+if [ -d /etc/adm/usuarios ]; then
+echo ""
+else
+mkdir /etc/adm/usuarios
+fi
+if [ -d /etc/adm/modulo ]; then
+echo ""
+else
+mkdir /etc/adm/modulo
+fi
+#VERIFICACAO##
+if [ -d /etc/adm/modulo/ovpn ]; then
+dois="E ADMINISTRADOR:"
+tres="OPENVPN"
+else
+dois=""
+tres=""
+fi
+drop=$(cat /bin/instalacao | egrep -o "2")
+if [ "$drop" = "2" ]; then
+um="DROPBEAR"
+else
+um="OPENSSH"
+fi
+##lop##
+while true
+do
+if [ "$1" = "" ]; then
+if [[ -e /etc/adm/modulo/atualiza ]]; then
+admfun adm90
+fi
+clear
+if [ -e /etc/adm/bnr ]; then
+/etc/adm/bnr
+fi
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+echo -e "\033[1;31mADMINISTRADOR: @MRX470"
+if [[ -e /etc/adm/modulo/atualiza ]]; then
+usr=$(cat /root/usrh)
+echo -e "\033[1;31m$usr \033[0m"
+rm -rf /root/usrh
+fi
+echo -e "\033[1;36mPARA SALIR DIGITE \033[1;31m[ 0 ]\033[1;36m O"
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+echo -e "\033[1;31m[ 1 ]\033[1;36m - CREAR USUARIOS"
+echo -e "\033[1;31m[ 3 ]\033[1;36m - REDEFINIR USUARIOS"
+echo -e "\033[1;31m[ 4 ]\033[1;36m - REMOVER USUARIOS"
+echo -e "\033[1;31m[ 6 ]\033[1;36m - MONITOREAR USUARIOS ONLINE"
+echo -e "\033[1;31m[ 7 ]\033[1;36m - VALIDAR USUARIOS"
+echo -e "\033[1;31m[ 8 ]\033[1;36m - CAMBIAR BANNER"
+if [ -e /etc/adm/modulo/limiter ]; then
+echo -e "\033[1;31m[ 9 ]\033[1;36m - \033[1;32m(ATIVO)\033[1;36m DESATIVAR KILL MULTILOGUIN"
+else
+echo -e "\033[1;31m[ 9 ]\033[1;36m - \033[1;31m(DESATIVADO) \033[1;36mATIVAR KILL MULTILOGUIN\033[0m"
+fi
+if [ -e /etc/adm/modulo/ovpn ]; then
+echo ""
+echo -e "\033[1;31mOPCOES OPENVPN"
+echo -e "\033[1;31m[ 10 ]\033[1;36m - CRIAR USUARIOS"
+echo -e "\033[1;31m[ 11 ]\033[1;36m - REMOVER USUARIOS"
+echo -e "\033[1;31m[ 12 ]\033[1;36m - REMOVER TODOS USUARIOS"
+echo -e "\033[1;31m[ 13 ]\033[1;36m - MUDAR DATA USUARIOS"
+echo -e "\033[1;31m[ 14 ]\033[1;36m - MONITORAR USUARIOS ONLINE"
+echo -e "\033[1;31m[ 15 ]\033[1;36m - VALIDADE USUARIOS\033[0m"
+echo -e "\033[1;31m[ 16 ]\033[1;36m - EDITAR CLIENTE OVPN\033[0m"
+fi
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+
+read -p "OPCION: " opc
+else
+opc="$1"
+fi
+##DROPBEAR##
+if [ "$drop" = "2" ]; then
+case $opc in
+1)
+admfun adm1
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+2)
+admfun adm22
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+3)
+admfun adm3
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+4)
+admfun adm4
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+5)
+admfun adm5
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+6)
+admfun adm62
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+7)
+admfun adm7
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+8)
+admfun adm82
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+9)
+if [ -e /etc/adm/modulo/limiter ]; then
+rm -rf /etc/adm/modulo/limiter
+for pids in `ps x | grep limiterb | grep -v grep | grep bin | awk '{print $1'}`
+do
+kill -9 $pids > /dev/null 2>&1
+done
+killall limiterb
+else
+nohup limiterb &
+touch /etc/adm/modulo/limiter
+fi
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+esac
+ else
+##OPENSSH##
+case $opc in
+1)
+admfun adm1
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+2)
+admfun adm21
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+3)
+admfun adm3
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+4)
+admfun adm4
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+5)
+admfun adm5
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+6)
+admfun adm61
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+7)
+admfun adm7
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+8)
+admfun adm81
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+9)
+if [ -e /etc/adm/modulo/limiter ]; then
+rm -rf /etc/adm/modulo/limiter
+for pids in `ps x | grep limitera | grep -v grep | grep bin | awk '{print $1'}`
+do
+kill -9 $pids > /dev/null 2>&1
+done
+killall limitera
+else
+nohup limitera &
+touch /etc/adm/modulo/limiter
+fi
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+esac
+fi
+
+##OPENVPN##
+if [ -e /etc/adm/modulo/ovpn ]; then
+case $opc in
+10)
+ovpnfun adm1
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+11)
+ovpnfun adm2
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+12)
+ovpnfun adm3
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+13)
+ovpnfun adm4
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+14)
+ovpnfun adm5
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+15)
+ovpnfun adm6
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+16)
+ovpnfun adm7
+read -p "Enter"
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+esac
+fi
+
+case $opc in
+0)
+menu
+break
+exit
+;;
+*)
+sleep 2s
+if [ "$1" != "" ]; then
+adm
+break
+fi
+;;
+esac
+sleep 2s
+done

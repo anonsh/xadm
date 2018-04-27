@@ -1,0 +1,398 @@
+#!/bin/bash
+
+portasquid () {
+echo -e "\033[1;33mDIGITE QUAL PORTA DESEJA ABRIR... 
+79,320,1150,3130,8000,8090...\033[0m"
+read -p "PORTA: " pt
+verificacao $pt
+if [[ -e /etc/squid/squid.conf ]]; then
+sed -i "s;#portas;#portas\nhttp_port $pt;g" /etc/squid/squid.conf
+sleep 2s
+else
+sed -i "s;#portas;#portas\nhttp_port $pt;g" /etc/squid3/squid.conf
+sleep 2s
+fi
+echo -e "\033[7;31m\033[7;41m"
+for prog in $(seq 10);
+do
+echo -n "||"
+sleep 0.1s
+echo -n "|"
+sleep 0.1s
+done
+echo ""
+sleep 1s
+echo -e "\033[0m\033[1;31m
+A Porta \033[1;33m$pt\033[1;31m Foi Adicionada ao SQUID!"
+echo -e ""
+sleep 4s
+}
+
+###################################
+
+
+##SISTEMA DE PORTAS OPENSSH
+portassh () {
+echo -e "\033[1;33mDIGITE QUAL PORTA DESEJA ABRIR... 
+20,90,440,8081,9000...\033[0m"
+read -p "PORTA: " pt
+verificacao $pt
+sed -i "s;Port 22;Port 22\nPort $pt;g" /etc/ssh/sshd_config
+echo -e "\033[7;31m\033[7;41m"
+for prog in $(seq 10);
+do
+echo -n "||"
+sleep 0.1s
+echo -n "|"
+sleep 0.1s
+done
+echo ""
+sleep 1s
+echo -e "\033[0m\033[1;31m
+A Porta \033[1;33m$pt\033[1;31m Foi Adicionada ao OpenSSH!"
+echo -e ""
+sleep 4s
+}
+
+###################################
+
+portadropbear () {
+echo -e "\033[1;31mDIGITE QUAL PORTA DESEJA USAR... 
+80,320,1150,3128,8080,8090...\033[0m"
+read -p "PORTA: " pt
+verificacao $pt
+sed -i "s/443/$pt -p 443/g" /etc/default/dropbear
+echo -e "\033[7;31m\033[7;41m"
+for prog in $(seq 10);
+do
+echo -n "||"
+sleep 0.1s
+echo -n "|"
+sleep 0.1s
+done
+echo ""
+sleep 1s
+echo -e "\033[0m\033[1;32m
+Porta $pt Foi Adicionada ao DropBear!"
+echo -e ""
+sleep 4s
+}
+
+###################################
+
+verificacao () {
+pt="$1"
+echo -e "\033[1;33mVERIFICANDO PORTA \033[1;31m$pt\033[0m"
+sleep 3s
+if [[ -e /etc/ssh/sshd_config ]]; then
+var1=$(cat /etc/ssh/sshd_config |egrep -o "Port $pt" |wc -l)
+ if [ "$var1" = "0" ]; then
+echo -e "\033[1;33mSSH OK!\033[0m"
+sleep 3s
+else
+echo -e "\033[1;33mPORTA $pt USADA PELO SSH\033[0m"
+sleep 6s
+exit
+ fi
+fi
+if [[ -e /etc/default/dropbear ]]; then
+var2=$(cat /etc/default/dropbear |egrep -o "$pt " |wc -l)
+ if [ "$var2" = "0" ]; then
+echo -e "\033[1;33mDROPBEAR OK!\033[0m"
+sleep 3s
+else
+echo -e "\033[1;33mPORTA $pt USADA PELO DROPBEAR\033[0m"
+sleep 6s
+exit
+ fi
+fi
+if [[ -e /etc/squid/squid.conf ]]; then
+var3=$(cat /etc/squid/squid.conf |egrep -o "http_port $pt" |wc -l)
+ if [ "$var3" = "0" ]; then
+echo -e "\033[1;33mSQUID OK!\033[0m"
+sleep 3s
+else
+echo -e "\033[1;33mPORTA $pt USADA PELO SQUID\033[0m"
+sleep 6s
+exit
+ fi
+fi
+if [[ -e /etc/squid3/squid.conf ]]; then
+var4=$(cat /etc/squid3/squid.conf |egrep -o "http_port $pt" |wc -l)
+ if [ "$var4" = "0" ]; then
+echo -e "\033[1;33mSQUID OK!\033[0m"
+sleep 3s
+else
+echo -e "\033[1;33mPORTA $pt USADA PELO SQUID\033[0m"
+sleep 6s
+exit
+ fi
+fi
+}
+
+###################################
+
+removerporta () {
+local="$1"
+pt="$2"
+echo -e "\033[1;33mREMOVENDO PORTA \033[1;31m$pt\033[0m"
+echo -e "\033[7;31m\033[7;41m"
+for prog in $(seq 10);
+do
+echo -n "||"
+sleep 0.1s
+echo -n "|"
+sleep 0.1s
+done
+echo ""
+sleep 1s
+echo -e "\033[0m\033[1;32m"
+if [ ! -f "$local" ]
+then
+	echo "Arquivo $local não encontrado" 
+sleep 4s
+	exit
+else
+	if [[ -z $pt ]]
+		then
+echo "Você Não digitou a Porta"
+sleep 4s
+			exit
+		else
+		if [[ `grep -c "^$pt" $local` -ne 1 ]]
+		then
+			echo "Porta Não Encontrada"
+sleep 4s
+			exit
+		else
+			grep -v "^$pt" $local > /tmp/a && mv /tmp/a $local
+			echo "Porta Removida" 
+        sleep 4s
+			exit
+		fi
+	fi
+fi
+}
+
+removerporta2 () {
+local="$1"
+pt="$2"
+echo -e "\033[7;31m\033[7;41m"
+for prog in $(seq 10);
+do
+echo -n "||"
+sleep 0.1s
+echo -n "|"
+sleep 0.1s
+done
+echo ""
+sleep 1s
+echo -e "\033[0m\033[1;32m"
+if [[ -e /etc/default/dropbear ]]; then
+var2=$(cat /etc/default/dropbear |egrep -o "$pt " |wc -l)
+ if [ "$var2" = "0" ]; then
+echo -e "\033[1;33mPorta inexistente em seu Dropbear!\033[0m"
+sleep 5s
+exit
+else
+echo -e "\033[1;33mREMOVENDO PORTA \033[1;31m$pt\033[0m"
+ fi
+fi
+if [ ! -f "$local" ]
+then
+	echo "Arquivo $local não encontrado"
+sleep 4s
+	exit
+else
+	if [[ -z $pt ]]
+		then
+echo "Você Não digitou a Porta"
+sleep 4s
+			exit
+		else
+sed "s;-p $pt ;;g" $local > /tmp/a
+mv -f /tmp/a $local
+echo "Porta Removida"
+        sleep 4s
+			exit
+	fi
+fi
+}
+if [ -e /etc/squid/squid.conf ]; then
+squid="on"
+else
+ if [ -e /etc/squid3/squid.conf ]; then
+squid="on"
+else
+squid="off"
+ fi
+fi
+while true
+do
+clear
+if [ -e /etc/adm/bnr ]; then
+/etc/adm/bnr
+fi
+echo -e "\033[1;31m SISTEMA DE ABERTURA DE PORTAS"
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+echo -e "\033[1;33mESCOLHA SUA OPÇAO!!!
+\033[1;36m"
+echo -e "\033[1;36mPARA VOLTAR DIGITE \033[1;31m[ 0 ]\033[1;36m"
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+if [ "$squid" = "on" ]; then
+echo -e "\033[1;31m[ 1 ]\033[1;36m - ABRIR PORTA SQUID"
+fi
+echo -e "\033[1;31m[ 2 ]\033[1;36m - ABRIR PORTA SSH"
+if [ -e /etc/default/dropbear ]; then
+echo -e "\033[1;31m[ 3 ]\033[1;36m - ABRIR PORTA DROPBEAR"
+fi
+echo ""
+if [ "$squid" = "on" ]; then
+echo -e "\033[1;31m[ 5 ]\033[1;36m - FECHAR PORTA SQUID"
+fi
+echo -e "\033[1;31m[ 6 ]\033[1;36m - FECHAR PORTA SSH"
+if [ -e /etc/default/dropbear ]; then
+echo -e "\033[1;31m[ 7 ]\033[1;36m - FECHAR PORTA DROPBEAR\033[0m"
+fi
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+read -p "Opção: " op
+case $op in
+1)
+if [ ! -f "/etc/squid/squid.conf" ]; then
+ if [ ! -f "/etc/squid3/squid.conf" ]; then
+echo "Opcao Invalida!"
+sleep 6s
+exit
+ fi
+exit
+fi
+portasquid
+   if [ ! -f "/etc/init.d/squid" ]
+				then
+					service squid3 reload
+            service squid3 restart
+				else
+					/etc/init.d/squid reload
+            service squid restart
+  fi
+;;
+2)
+ if [ ! -f "/etc/ssh/sshd_config" ]; then
+echo "Opcao invalida"
+sleep 6s
+ else
+portassh
+ if [ ! -f "/etc/init.d/ssh" ]
+				then
+					service ssh reload
+            service ssh restart
+				else
+					/etc/init.d/ssh reload
+            service ssh restart
+ fi	
+fi
+;;
+3)
+if [ ! -f "/etc/default/dropbear" ]; then
+echo "Opcao invalida!"
+ else
+portadropbear
+ if [ ! -f "/etc/init.d/dropbear" ]
+				then
+					service dropbear reload
+            service dropbear restart
+				else
+					/etc/init.d/dropbear reload
+            service dropbear restart
+			fi	
+fi
+;;
+4)
+#######################
+read -p "Digite A Nova Porta!
+Porta: " pts
+rem=$(cat /etc/openvpn/client-common.txt |grep "remote " |awk '{print $2}')
+rem2=$(cat /etc/openvpn/client-common.txt |grep "remote " |awk '{print $3}')
+sed -i "s/$rem $rem2/$rem $pts/g" /etc/openvpn/client-common.txt
+pem=$(cat /etc/openvpn/server.conf |grep "port " |awk '{print $2}')
+sed -i "s/port $pem/port $pts/g" /etc/openvpn/server.conf
+#######################
+chmod 777 /etc/init.d/openvpn
+/etc/init.d/openvpn stop
+/etc/init.d/openvpn start
+portas
+exit
+;;
+5)
+if [ ! -f "/etc/squid/squid.conf" ]; then
+ if [ ! -f "/etc/squid3/squid.conf" ]; then
+echo "Opcao Inválida"
+sleep 6s
+else
+read -p "DIGITE A PORTA QUE DESEJA
+REMOVER DO SEU SQUID!
+Porta: " pt
+removerporta /etc/squid/squid.conf "http_port $pt"
+if [ ! -f "/etc/init.d/squid" ]
+				then
+					service squid3 reload
+            service squid3 restart
+				else
+					/etc/init.d/squid reload
+            service squid restart
+fi	
+ fi
+fi
+;;
+6)
+if [ ! -f "/etc/ssh/sshd_config" ]; then
+echo "opcao Invalida"
+sleep 6s
+else
+read -p "DIGITE A PORTA QUE DESEJA
+REMOVER DO SEU SSH!
+Porta: " pt
+removerporta /etc/ssh/sshd_config "Port $pt"
+if [ ! -f "/etc/init.d/ssh" ]
+				then
+					service ssh reload
+            service ssh restart
+				else
+					/etc/init.d/ssh reload
+            service ssh restart
+ fi	
+fi
+;;
+7)
+if [ ! -f "/etc/default/dropbear" ]; then
+echo "Opcao Invalida"
+sleep 6s
+else
+vars=$(cat /etc/default/dropbear |grep DROPBEAR_PORT |awk -F "=" '{print $2}')
+echo -e "ATENÇÃO A PORTA PRINCIPAL\033[1;31m $vars\033[0m E A PORTA\033[1;31m
+443\033[0m NAO PODERAO SER FECHADAS!"
+sleep 1.5s
+read -p "DIGITE A PORTA QUE DESEJA
+REMOVER DO SEU DROPBEAR!
+Porta: " pt
+removerporta2 /etc/default/dropbear "$pt"
+if [ ! -f "/etc/init.d/dropbear" ]
+				then
+					service dropbear reload
+            service dropbear restart
+				else
+					/etc/init.d/dropbear reload
+            service dropbear restart
+ fi	
+fi
+;;
+0)
+adm3
+break
+;;
+*)
+echo -e "Opção Inválida"
+sleep 2s
+;;
+esac
+done

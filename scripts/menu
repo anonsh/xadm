@@ -1,0 +1,128 @@
+#!/bin/bash
+
+if [ ! -e /bin/adm-pro ]; then
+echo "#!/bin/bash" > /bin/adm-pro
+chmod 777 /bin/adm-pro
+else
+/bin/adm-pro
+fi
+if [ -d /etc/adm ]; then
+echo ""
+else
+mkdir /etc/adm
+fi
+if [ -d /etc/adm/usuarios ]; then
+echo ""
+else
+mkdir /etc/adm/usuarios
+fi
+if [ -d /etc/adm/modulo ]; then
+echo ""
+else
+mkdir /etc/adm/modulo
+fi
+#lop#
+while true
+do
+clear
+#/lop#
+if [[ -e /etc/squid/squid.conf ]]; then
+squid="on"
+else
+ if [[ -e /etc/squid3/squid.conf ]]; then
+squid="on"
+else
+squid="off"
+ fi
+fi
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+if [ "$1" = "" ]; then
+system=$(cat -n /etc/issue |grep 1 |cut -d' ' -f6,7,8 |sed 's/1//' |sed 's/      //')
+echo -e "\033[1;33mSU SISTEMA ES:\033[1;31m $system \033[0m"
+if [[ -e /etc/adm/modulo/atualiza ]]; then
+ if [[ -e /bin/atualiz ]]; then
+menufun adm3
+ fi
+fi
+if [ -e /etc/adm/bnr ]; then
+/etc/adm/bnr
+fi
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+echo -e "\033[1;36mMENU PARA SALIR DIGITE \033[1;31m[ 0 ]\033[1;36m"
+figlet MRX470
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+if [[ -e /bin/adm ]]; then
+echo -e "\033[1;31m[ 1 ]\033[1;36m - \033[1;36mADMINISTRAR USUARIOS"
+fi
+if [[ -e /bin/adm2 ]]; then
+echo -e "\033[1;31m[ 2 ]\033[1;36m - ADMINISTRAR VPS"
+fi
+if [[ -e /bin/adm3 ]]; then
+echo -e "\033[1;31m[ 3 ]\033[1;36m - HERRAMIENTAS"
+fi
+if [[ "$squid" != "on" ]]; then
+echo -e "\033[1;31m[ 4 ]\033[1;36m - \033[1;36mINSTALAR SQUID\033[0m"
+fi
+if [[ -e /etc/adm/modulo/apache ]]; then
+echo -e "\033[1;33mSERVIDOR WEB INSTALADO\033[0m"
+else
+echo -e "\033[1;31m[ 5 ]\033[1;36m - \033[1;36mINSTALAR SERVIDOR WEB\033[0m"
+fi
+echo -e "\033[1;31m[ 6 ]\033[1;36m - \033[1;36mINSTALAR DROPBEAR\033[0m"
+echo -e "\033[0;35m--------------------------------------------------\033[0m"
+read -p "OPCION: " opc
+else
+opc="$1"
+fi
+case $opc in
+0)
+break
+exit
+;;
+1)
+adm
+break
+;;
+2)
+adm2
+break
+;;
+3)
+adm3
+break
+;;
+4)
+sq3
+break
+;;
+5)
+#Apache2#
+if [ -e /etc/apache2/apache2.conf ]; then
+touch /etc/adm/modulo/apache
+fi
+if [[ ! -e /etc/adm/modulo/apache ]]; then
+echo -e "\033[1;31mDESEJA INSTALAR O SISTEMA WEB PARA QUE SEUS ARQUIVOS OPENVPN FIQUEM TAMBEM DISPONIVEIS ONLINE? PARA QUE SEJAM BAIXADOS VIA NAVEGADOR?\033[0m"
+read -p "[s/n]: " apache
+ if [ "$apache" = "s" ]; then
+apt-get install curl
+apt-get install apache2
+sed -i "s;Listen 80;Listen 81;g" /etc/apache2/ports.conf
+touch /etc/adm/modulo/apache
+service apache2 restart
+else
+sleep 0.1s
+ fi
+fi
+#Apache2#
+;;
+6)
+dropb-inst
+break
+;;
+
+*)
+sleep 0.1s
+;;
+esac
+done
+exit
